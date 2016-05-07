@@ -567,34 +567,45 @@ var angular = angular || null;
         }
     }
 
-    SubtitleList.prototype.indexOfFirstSubtitleAfter = function(time) {
-        /* Get the first subtitle whose end is after time
-         *
+    SubtitleList.prototype.lowerBound = function(key, proj) {
+        var begin = 0;
+        var end = this.syncedCount;
+        while (end > begin) {
+            var mid = begin + ((end - begin) >> 1);
+            if (proj(arr[mid]) > key) {
+                end = mid;
+            } else {
+                begin = mid + 1;
+            }
+        }
+        return begin;
+    }
+
+    SubtitleList.prototype.indexOfNextSubtitle = function(time) {
+        /* Get the index of the first subtitle starting after 'time'.
+         * returns index of the subtitle, or -1 if no subtitles occur after 'time'.
+         */
+        var found = lowerBound(time, function(s) { return s.startTime; });
+        if (found >= this.syncedCount) {
+            return -1;
+        }
+        return found;
+    }
+
+    SubtitleList.prototype.indexOfPendingSubtitle = function(time) {
+        /* Get the subtitle presently active or the next pending one.
          * returns index of the subtitle, or -1 if none are found.
          */
 
-        // Do a binary search to find the sub
-        var left = 0;
-        var right = this.syncedCount-1;
-        // First check that we are going to find any subtitle
-        if(right < 0 || this.subtitles[right].endTime <= time) {
+        var found = lowerBound(time, function(s) { return s.endTime; });
+        if (found >= this.syncedCount) {
             return -1;
         }
-        // Now do the binary search
-        while(left < right) {
-            var index = Math.floor((left + right) / 2);
-            if(this.subtitles[index].endTime > time) {
-                right = index;
-            } else {
-                left = index + 1;
-            }
-        }
-        return left;
+        return found;
     }
 
     SubtitleList.prototype.firstSubtitle = function() {
-        return this.subtitles[this.indexOfFirstSubtitleAfter(-1)] ||
-               this.firstUnsyncedSubtitle();
+        return this.subtitles.length > 0 ? this.subtitles[0] : null;
     }
 
     SubtitleList.prototype.subtitleAt = function(time) {
@@ -602,7 +613,7 @@ var angular = angular || null;
          *
          * returns a StoredSubtitle, or null if no subtitle occupies the time.
          */
-        var i = this.indexOfFirstSubtitleAfter(time);
+        var i = this.indexOfPendingSubtitle(time);
         if(i == -1) {
             return null;
         }
@@ -616,7 +627,7 @@ var angular = angular || null;
 
     SubtitleList.prototype.getSubtitlesForTime = function(startTime, endTime) {
         var rv = [];
-        var i = this.indexOfFirstSubtitleAfter(startTime);
+        var i = this.indexOfPendingSubtitle(startTime);
         if(i == -1) {
             return rv;
         }

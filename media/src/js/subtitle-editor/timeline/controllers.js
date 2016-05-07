@@ -109,7 +109,7 @@
             }
             var time = $scope.currentTime;
             var subtitleList = $scope.workingSubtitles.subtitleList;
-            var nextIndex = subtitleList.indexOfFirstSubtitleAfter(time);
+            var nextIndex = subtitleList.indexOfNextSubtitle(time);
             if(nextIndex >= 0) {
                 /* We are in the range of synced subtitles */
                 var next = subtitleList.subtitles[nextIndex];
