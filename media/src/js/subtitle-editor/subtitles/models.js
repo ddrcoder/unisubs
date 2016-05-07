@@ -71,23 +71,23 @@ var angular = angular || null;
     }
 
     Subtitle.prototype.hasWarning = function(type, data) {
-	if ((type == "lines" || type == undefined) && (this.lineCount() > 2))
-	    return true;
-	if ((type == "characterRate" || type == undefined) && (this.characterRate() > 21))
-	    return true;
-	if ((type == "timing" || type == undefined) && ((this.startTime > -1) && (this.endTime > -1) && (this.endTime - this.startTime < 700)))
-	    return true;
-	if (type == "longline" || type == undefined) {
-	    if (type == "longline" && (data == undefined) && ((this.characterCountPerLine().length == 1) && (this.characterCountPerLine()[0] > 42)))
-		return true;
-	    var from = (data == undefined) ? 0 : data;
-	    var to = (data == undefined) ? (this.characterCountPerLine().length) : (data + 1);
-	    for (var i = from ; i < to ; i++) {
-		if (this.characterCountPerLine()[i] > 42)
-		    return true;
-	    }
-	}
-	return false;
+        if ((type == "lines" || type == undefined) && (this.lineCount() > 2))
+            return true;
+        if ((type == "characterRate" || type == undefined) && (this.characterRate() > 21))
+            return true;
+        if ((type == "timing" || type == undefined) && ((this.startTime > -1) && (this.endTime > -1) && (this.endTime - this.startTime < 700)))
+            return true;
+        if (type == "longline" || type == undefined) {
+            if (type == "longline" && (data == undefined) && ((this.characterCountPerLine().length == 1) && (this.characterCountPerLine()[0] > 42)))
+                return true;
+            var from = (data == undefined) ? 0 : data;
+            var to = (data == undefined) ? (this.characterCountPerLine().length) : (data + 1);
+            for (var i = from ; i < to ; i++) {
+                if (this.characterCountPerLine()[i] > 42)
+                    return true;
+            }
+        }
+        return false;
     }
 
     Subtitle.prototype.content = function() {
@@ -342,7 +342,7 @@ var angular = angular || null;
         var length = this.length();
         for(var i=0; i < length; i++) {
             if((this.subtitles[i].startTime < 0) ||
-	       (this.subtitles[i].endTime < 0)) {
+                    (this.subtitles[i].endTime < 0)) {
                 return this.subtitles[i];
             }
         }
@@ -351,15 +351,15 @@ var angular = angular || null;
                 return this.subtitles[i];
             }
         }
-	var startTimes = {};
+        var startTimes = {};
         for(var i=0; i < length; i++) {
             if(startTimes[this.subtitles[i].startTime]) {
                 return this.subtitles[i];
             } else {
-		startTimes[this.subtitles[i].startTime] = true;
-	    }
+                startTimes[this.subtitles[i].startTime] = true;
+            }
         }
-	return undefined;
+        return undefined;
     }
 
     SubtitleList.prototype.toXMLString = function() {
@@ -443,34 +443,34 @@ var angular = angular || null;
     }
 
     SubtitleList.prototype.computeTimingsForInsertion = function(firstStart, firstEnd, secondStart, secondEnd) {
-	var newSubtitleDuration = 3000;
-	var minSubtitleDuration = 1000;
-	var availableTime = secondEnd - firstStart;
-	if (secondStart - firstEnd > newSubtitleDuration) {
-	    var middle = firstStart + availableTime / 2;
-	    var newEnd = Math.min(middle + newSubtitleDuration / 2, secondStart);
-	    var newStart = newEnd - newSubtitleDuration;
-	    if (newStart < firstEnd) {
-		newStart = firstEnd;
-		newEnd = newStart + newSubtitleDuration;
-	    }
-	    return [firstStart, firstEnd,
-		    newStart, newEnd,
-		    secondStart, secondEnd];
-	} else if (secondStart - firstStart > 2 * minSubtitleDuration) {
-	    var newEnd = secondStart;
-	    var newStart = Math.max(newEnd - newSubtitleDuration, firstStart + minSubtitleDuration);
-	    if (newStart < firstEnd)
-		firstEnd = newStart;
-	    return [firstStart, firstEnd,
-		    newStart, newEnd,
-		    secondStart, secondEnd];
-	} else {
-	    newDuration = availableTime / 3;
-	    return [firstStart, firstStart + newDuration,
-		    firstStart + newDuration, firstStart + 2*newDuration,
-		    firstStart + 2*newDuration, secondEnd];
-	}
+        var newSubtitleDuration = 3000;
+        var minSubtitleDuration = 1000;
+        var availableTime = secondEnd - firstStart;
+        if (secondStart - firstEnd > newSubtitleDuration) {
+            var middle = firstStart + availableTime / 2;
+            var newEnd = Math.min(middle + newSubtitleDuration / 2, secondStart);
+            var newStart = newEnd - newSubtitleDuration;
+            if (newStart < firstEnd) {
+                newStart = firstEnd;
+                newEnd = newStart + newSubtitleDuration;
+            }
+            return [firstStart, firstEnd,
+            newStart, newEnd,
+            secondStart, secondEnd];
+        } else if (secondStart - firstStart > 2 * minSubtitleDuration) {
+            var newEnd = secondStart;
+            var newStart = Math.max(newEnd - newSubtitleDuration, firstStart + minSubtitleDuration);
+            if (newStart < firstEnd)
+                firstEnd = newStart;
+            return [firstStart, firstEnd,
+            newStart, newEnd,
+            secondStart, secondEnd];
+        } else {
+            newDuration = availableTime / 3;
+            return [firstStart, firstStart + newDuration,
+            firstStart + newDuration, firstStart + 2*newDuration,
+            firstStart + 2*newDuration, secondEnd];
+        }
     }
 
     SubtitleList.prototype.insertSubtitleBefore = function(otherSubtitle) {
@@ -491,16 +491,16 @@ var angular = angular || null;
             // time
             if(pos > 0) {
                 // Inserting a subtitle between two others.
-		var firstSubtitle = this.prevSubtitle(otherSubtitle);
-		var newTimings = this.computeTimingsForInsertion(
-		    firstSubtitle.startTime,
-		    firstSubtitle.endTime,
-		    otherSubtitle.startTime,
-		    otherSubtitle.endTime);
+                var firstSubtitle = this.prevSubtitle(otherSubtitle);
+                var newTimings = this.computeTimingsForInsertion(
+                        firstSubtitle.startTime,
+                        firstSubtitle.endTime,
+                        otherSubtitle.startTime,
+                        otherSubtitle.endTime);
                 var startTime = newTimings[2];
                 var endTime = newTimings[3];
-		// Only second subtitle start time might change
-		// so needs to bre re-rendered
+                // Only second subtitle start time might change
+                // so needs to bre re-rendered
                 this._updateSubtitleTime(firstSubtitle, newTimings[0],
                         newTimings[1]);
                 this.updateSubtitleTime(otherSubtitle, newTimings[4], newTimings[5]);
